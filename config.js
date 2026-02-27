@@ -12,7 +12,7 @@ module.exports = {
   minHistoryDays: 3, // Minimum days of data for spike detection
   
   // 🤖 xAI Settings
-  xaiModel: 'grok-2-vision-1212', // or 'grok-2-vision-latest'
+  xaiModel: 'grok-4-latest', // or 'grok-2-vision-latest'
   maxTweetsToAnalyze: 100,
   
   // 🌐 Server
