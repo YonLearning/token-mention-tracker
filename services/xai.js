@@ -1,15 +1,15 @@
 const axios = require('axios');
-const config = require('./config');
+const config = require('../config');
 
-class ClaudeService {
+class XAIService {
   constructor() {
-    this.apiKey = config.claudeApiKey;
-    this.model = config.claudeModel;
-    this.baseUrl = 'https://api.anthropic.com/v1';
+    this.apiKey = config.xaiApiKey;
+    this.model = config.xaiModel;
+    this.baseUrl = 'https://api.x.ai/v1';
   }
 
   /**
-   * Analyze sentiment of tweets
+   * Analyze sentiment of tweets using xAI (Grok)
    * @param {Array} tweets - Array of tweet objects
    * @param {string} token - Token symbol
    * @returns {Promise<Object>} Sentiment analysis result
@@ -37,24 +37,25 @@ KEY_POINTS:
 
 Be objective and base your analysis only on the tweets provided.`;
 
-      const response = await axios.post(`${this.baseUrl}/messages`, {
+      const response = await axios.post(`${this.baseUrl}/chat/completions`, {
         model: this.model,
-        max_tokens: 500,
         messages: [
+          { role: 'system', content: 'You are a cryptocurrency sentiment analyst. Be objective and data-driven.' },
           { role: 'user', content: prompt }
-        ]
+        ],
+        max_tokens: 500,
+        temperature: 0.3
       }, {
         headers: {
-          'x-api-key': this.apiKey,
-          'Content-Type': 'application/json',
-          'anthropic-version': '2023-06-01'
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
         }
       });
 
-      const content = response.data.content[0].text;
+      const content = response.data.choices[0].message.content;
       return this.parseSentimentResponse(content);
     } catch (error) {
-      console.error('Claude API Error:', error.response?.data || error.message);
+      console.error('xAI API Error:', error.response?.data || error.message);
       
       // Return fallback if API fails
       return {
@@ -68,8 +69,8 @@ Be objective and base your analysis only on the tweets provided.`;
   }
 
   /**
-   * Parse Claude's response into structured data
-   * @param {string} text - Raw Claude response
+   * Parse xAI's response into structured data
+   * @param {string} text - Raw xAI response
    * @returns {Object} Parsed sentiment data
    */
   parseSentimentResponse(text) {
@@ -110,4 +111,4 @@ Be objective and base your analysis only on the tweets provided.`;
   }
 }
 
-module.exports = new ClaudeService();
+module.exports = new XAIService();

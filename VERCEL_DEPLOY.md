@@ -10,7 +10,7 @@ Before deploying, ensure you have:
 - ✅ GitHub account (YonLearning)
 - ✅ Vercel account (free at vercel.com)
 - ✅ Twitter API Bearer Token
-- ✅ Claude API Key
+- ✅ xAI API Key (from https://console.x.ai)
 
 ---
 
@@ -19,7 +19,7 @@ Before deploying, ensure you have:
 ### Step 1: Push to GitHub
 
 ```bash
-cd /home/ubuntu/.openclaw/workspace/token-tracker
+cd /home/ubuntu/.openclaw/workspace/listproject/token-tracker
 
 # Initialize git
 git init
@@ -60,7 +60,7 @@ Click **"Environment Variables"** and add:
 | Name | Value | Where to Get |
 |------|-------|--------------|
 | `TWITTER_BEARER_TOKEN` | Your Twitter Bearer Token | developer.twitter.com |
-| `CLAUDE_API_KEY` | Your Claude API Key | console.anthropic.com |
+| `XAI_API_KEY` | Your xAI API Key | console.x.ai |
 
 Click **"Add"** for each variable.
 
@@ -140,7 +140,7 @@ git push
 ### App Works Locally But Not on Vercel
 
 1. Check `vercel.json` exists in repo
-2. Ensure `TWITTER_BEARER_TOKEN` and `CLAUDE_API_KEY` are in Vercel env vars (not just config.js)
+2. Ensure `TWITTER_BEARER_TOKEN` and `XAI_API_KEY` are in Vercel env vars (not just config.js)
 3. Redeploy
 
 ---
@@ -188,12 +188,12 @@ Built a Token Mention Tracker in 6 hours 🚀
 
 Features:
 • Track any crypto token's social mentions
-• AI sentiment analysis (Claude-powered)  
+• AI sentiment analysis (xAI Grok-powered)  
 • Automatic spike alerts
 
 Try it: https://token-mention-tracker.vercel.app
 
-Tech: Node.js, Twitter API, Claude AI, Vercel
+Tech: Node.js, Twitter API, xAI Grok, Vercel
 
 #buildinpublic #Web3 #AI
 ```
@@ -215,10 +215,11 @@ After MVP is live:
 ## 🆘 Need Help?
 
 **Vercel Docs:** https://vercel.com/docs
+**xAI Docs:** https://docs.x.ai
 **Common Issues:** Check Vercel's status page at https://status.vercel.com
 
 **Your Project Files:**
-- Local: `/home/ubuntu/.openclaw/workspace/token-tracker`
+- Local: `/home/ubuntu/.openclaw/workspace/listproject/token-tracker`
 - GitHub: https://github.com/YonLearning/token-mention-tracker
 
 ---

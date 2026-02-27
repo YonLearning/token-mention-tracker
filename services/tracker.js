@@ -1,5 +1,5 @@
 const twitterService = require('./twitter');
-const claudeService = require('./claude');
+const xaiService = require('./xai');
 const dataService = require('./data');
 const config = require('../config');
 
@@ -17,10 +17,10 @@ class TrackerService {
       const tweets = await twitterService.fetchMentions(token, config.maxTweetsToAnalyze);
       console.log(`📊 Found ${tweets.length} mentions`);
       
-      // 2. Analyze sentiment with Claude
+      // 2. Analyze sentiment with xAI (Grok)
       let sentiment = { sentiment: 'NEUTRAL', score: 0, summary: 'No tweets found' };
       if (tweets.length > 0) {
-        sentiment = await claudeService.analyzeSentiment(tweets, token);
+        sentiment = await xaiService.analyzeSentiment(tweets, token);
         console.log(`🤖 Sentiment: ${sentiment.sentiment} (${sentiment.score})`);
       }
       

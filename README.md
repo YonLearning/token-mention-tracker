@@ -1,11 +1,11 @@
 # Token Mention Tracker
 
-AI-powered cryptocurrency token mention tracker with sentiment analysis.
+AI-powered cryptocurrency token mention tracker with sentiment analysis using xAI (Grok).
 
 ## 🚀 Features
 
 - **Real-time Tracking**: Monitor any crypto token's social mentions
-- **AI Sentiment Analysis**: Claude-powered sentiment scoring (-10 to +10)
+- **AI Sentiment Analysis**: xAI (Grok)-powered sentiment scoring (-10 to +10)
 - **Spike Detection**: Automatic alerts when mentions spike 2x above average
 - **Historical Data**: Track trends over time
 - **Simple Dashboard**: Clean web interface to view results
@@ -17,10 +17,10 @@ AI-powered cryptocurrency token mention tracker with sentiment analysis.
    - Apply for "Basic" (free tier)
    - Copy your Bearer Token
 
-2. **Claude API Key**
-   - Go to: https://console.anthropic.com
-   - Get API key
-   - Ensure you have API credits
+2. **xAI API Key**
+   - Go to: https://console.x.ai
+   - Sign up and get API key
+   - Note: xAI provides access to Grok models
 
 ## 🛠️ Setup
 
@@ -35,10 +35,14 @@ npm install
 ### 2. Configure API Keys
 
 ```bash
-cp config.example.js config.js
-# Edit config.js with your API keys
-nano config.js
+cp .env.example .env
+# Edit .env with your API keys
+nano .env
 ```
+
+Add your keys:
+- `TWITTER_BEARER_TOKEN=your_token_here`
+- `XAI_API_KEY=your_key_here`
 
 ### 3. Run Locally
 
@@ -63,7 +67,7 @@ git push origin main
 4. Import `token-mention-tracker`
 5. Add Environment Variables:
    - `TWITTER_BEARER_TOKEN` = your Twitter token
-   - `CLAUDE_API_KEY` = your Claude key
+   - `XAI_API_KEY` = your xAI key
 6. Deploy!
 
 ### Step 3: Set Up Cron Job (Auto-tracking)
@@ -108,15 +112,15 @@ Edit `config.js`:
 module.exports = {
   // API Keys
   twitterBearerToken: process.env.TWITTER_BEARER_TOKEN || 'your-token-here',
-  claudeApiKey: process.env.CLAUDE_API_KEY || 'your-key-here',
+  xaiApiKey: process.env.XAI_API_KEY || 'your-key-here',
   
   // Tracking Settings
   trackedTokens: ['BONK'], // Tokens to auto-track
   checkInterval: '0 */6 * * *', // Every 6 hours
   spikeThreshold: 2.0, // 2x average = spike
   
-  // Claude Settings
-  claudeModel: 'claude-3-5-sonnet-20241022',
+  // xAI Settings
+  xaiModel: 'grok-2-latest',
   maxTweetsToAnalyze: 100
 };
 ```
@@ -124,7 +128,7 @@ module.exports = {
 ## 💡 How It Works
 
 1. **Fetch**: Gets recent tweets mentioning the token (Twitter API)
-2. **Analyze**: Sends tweets to Claude for sentiment scoring
+2. **Analyze**: Sends tweets to xAI (Grok) for sentiment scoring
 3. **Store**: Saves data to JSON files
 4. **Detect**: Compares to historical average for spikes
 5. **Alert**: Flags when mentions spike above threshold
@@ -172,7 +176,7 @@ You! In one day with AI assistance.
 **Tech Stack:**
 - Node.js + Express
 - Twitter API v2
-- Claude AI (Anthropic)
+- xAI API (Grok)
 - Vanilla JavaScript
 
 ## 📄 License
