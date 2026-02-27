@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "name": "token-mention-tracker",
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/server.js"
+    }
+  ],
+  "env": {
+    "TWITTER_BEARER_TOKEN": "@twitter_bearer_token",
+    "CLAUDE_API_KEY": "@claude_api_key"
+  },
+  "crons": [
+    {
+      "path": "/api/cron/track",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}

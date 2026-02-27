@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 Token Mention Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+    
+    .subtitle {
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    input[type="text"] {
+      flex: 1;
+      padding: 15px;
+      font-size: 18px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      text-transform: uppercase;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    
+    .result {
+      display: none;
+    }
+    
+    .result.show {
+      display: block;
+    }
+    
+    .token-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .token-name {
+      font-size: 2em;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .mentions-count {
+      font-size: 3em;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .mentions-label {
+      color: #666;
+      font-size: 0.9em;
+    }
+    
+    .sentiment-box {
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .sentiment-bullish {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+    }
+    
+    .sentiment-bearish {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+    }
+    
+    .sentiment-neutral {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+    }
+    
+    .sentiment-score {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .sentiment-summary {
+      color: #555;
+      line-height: 1.5;
+    }
+    
+    .spike-alert {
+      background: #dc3545;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .spike-alert h3 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .stat-box {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+    
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    
+    .tracked-tokens {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .token-badge {
+      background: #667eea;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .token-badge:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Token Mention Tracker</h1>
+    <p class="subtitle">AI-powered cryptocurrency sentiment analysis</p>
+    
+    <div class="card">
+      <div class="input-group">
+        <input type="text" id="tokenInput" placeholder="Enter token (e.g., BONK)" value="BONK">
+        <button onclick="trackToken()" id="trackBtn">Track Now</button>
+      </div>
+      
+      <div id="loading" class="loading" style="display: none;">
+        🔍 Analyzing mentions...
+      </div>
+      
+      <div id="result" class="result">
+        <!-- Results will be inserted here -->
+      </div>
+      
+      <div id="error" class="error" style="display: none;"></div>
+    </div>
+    
+    <div class="card">
+      <h3>📊 Auto-Tracked Tokens</h3>
+      <div id="trackedTokens" class="tracked-tokens">
+        Loading...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load tracked tokens on page load
+    async function loadTrackedTokens() {
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        
+        const container = document.getElementById('trackedTokens');
+        container.innerHTML = data.statuses.map(s => `
+          <div class="token-badge" onclick="trackToken('${s.token}')">
+            ${s.token} ${s.spike ? '🔥' : ''}
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load tracked tokens:', error);
+      }
+    }
+    
+    async function trackToken(token = null) {
+      const input = document.getElementById('tokenInput');
+      const btn = document.getElementById('trackBtn');
+      const loading = document.getElementById('loading');
+      const result = document.getElementById('result');
+      const error = document.getElementById('error');
+      
+      const tokenSymbol = token || input.value.toUpperCase();
+      
+      if (!tokenSymbol) {
+        alert('Please enter a token symbol');
+        return;
+      }
+      
+      // Reset UI
+      btn.disabled = true;
+      loading.style.display = 'block';
+      result.classList.remove('show');
+      error.style.display = 'none';
+      
+      try {
+        const response = await fetch(`/api/track/${tokenSymbol}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          displayResult(data);
+        } else {
+          throw new Error(data.error || 'Tracking failed');
+        }
+      } catch (err) {
+        error.textContent = 'Error: ' + err.message;
+        error.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    }
+    
+    function displayResult(data) {
+      const result = document.getElementById('result');
+      const sentiment = data.sentiment;
+      const spike = data.spike;
+      
+      const sentimentClass = sentiment.sentiment.toLowerCase();
+      const sentimentEmoji = sentiment.sentiment === 'BULLISH' ? '🟢' : 
+                            sentiment.sentiment === 'BEARISH' ? '🔴' : '🟡';
+      
+      let spikeHtml = '';
+      if (spike.isSpike) {
+        spikeHtml = `
+          <div class="spike-alert">
+            <h3>🚨 SPIKE DETECTED!</h3>
+            <p>${spike.increase}% above average (${spike.average} avg)</p>
+          </div>
+        `;
+      }
+      
+      result.innerHTML = `
+        <div class="token-header">
+          <div>
+            <div class="token-name">$${data.token}</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="mentions-count">${data.mentions}</div>
+            <div class="mentions-label">mentions (24h)</div>
+          </div>
+        </div>
+        
+        ${spikeHtml}
+        
+        <div class="sentiment-box sentiment-${sentimentClass}">
+          <div class="sentiment-score">${sentimentEmoji} ${sentiment.sentiment} (${sentiment.score > 0 ? '+' : ''}${sentiment.score})</div>
+          <div class="sentiment-summary">${sentiment.summary}</div>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-value">${sentiment.confidence || 'N/A'}%</div>
+            <div class="stat-label">Confidence</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${spike.average || 'N/A'}</div>
+            <div class="stat-label">7-Day Avg</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${spike.threshold || 'N/A'}</div>
+            <div class="stat-label">Spike Threshold</div>
+          </div>
+        </div>
+      `;
+      
+      result.classList.add('show');
+    }
+    
+    // Load tracked tokens on startup
+    loadTrackedTokens();
+  </script>
+</body>
+</html>
